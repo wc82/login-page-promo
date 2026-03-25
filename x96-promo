@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignStix X96 Media Player</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 365px;
+      height: 447px;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image:
+        linear-gradient(#efefef 2px, transparent 2px),
+        linear-gradient(90deg, #efefef 2px, transparent 2px),
+        linear-gradient(#efefef 1px, transparent 1px),
+        linear-gradient(90deg, #efefef 1px, #fcfcfc 1px);
+      background-size: 50px 50px, 50px 50px, 10px 10px, 10px 10px;
+      background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+    }
+
+    .card {
+      width: 365px;
+      height: 447px;
+      background: #f8f8f6;
+      border-radius: 40px;
+      box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.18);
+      padding: 28px 26px 26px;
+      display: flex;
+      flex-direction: column;
+      font-family: Montserrat, sans-serif;
+      overflow: hidden;
+    }
+
+    .cat {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #c34a36;
+      margin-bottom: 6px;
+    }
+
+    .heading {
+      font-size: 20px;
+      font-weight: 700;
+      color: #444;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .heading span { color: #c34a36; }
+
+    .img-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0;
+    }
+
+    .img-wrap img {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .desc {
+      font-size: 12.5px;
+      font-weight: 400;
+      color: #696969;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+
+    .tag {
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: #f2cfc9;
+      font-size: 11px;
+      font-weight: 500;
+      color: #7a2a1a;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      height: 46px;
+      border-radius: 999px;
+      background: #c34a36;
+      color: #fff;
+      font-family: Montserrat, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:hover { background: #a83929; }
+    .btn:active { transform: scale(0.98); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <p class="cat">Media Player</p>
+    <h2 class="heading">SignStix <span>X96</span></h2>
+    <div class="img-wrap">
+      <img
+        src="https://signstix.com/wp-content/uploads/2024/05/X96-Device-No-background-2-768x768.png"
+        alt="SignStix X96 Android Media Player"
+      />
+    </div>
+    <p class="desc">Our X96 Android Device is a compact media player that turns any screen into a digital signage device.</p>
+    <div class="tag-row">
+      <span class="tag">Android</span>
+      <span class="tag">Compact</span>
+      <span class="tag">Digital Signage</span>
+    </div>
+
+    <!-- ================================ -->
+    <!-- REPLACE THE # BELOW WITH YOUR URL -->
+    <!-- ================================ -->
+    <a href="#" target="_blank" class="btn">
+      Learn More →
+    </a>
+
+  </div>
+</body>
+</html>
