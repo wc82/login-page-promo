@@ -71,15 +71,12 @@
 
     .heading span { color: #c34a36; }
 
-    /* ✅ FIXED MEDIA AREA */
-    .img-wrap,
-    .icon-wrap {
-      height: 190px;
+    .img-wrap {
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 8px 0;
-      flex-shrink: 0;
     }
 
     .img-wrap img {
@@ -87,6 +84,14 @@
       height: 190px;
       object-fit: contain;
       display: block;
+    }
+
+    .icon-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 8px 0;
     }
 
     .icon-circle {
@@ -177,6 +182,87 @@
   </style>
 </head>
 <body>
-  <!-- YOUR EXISTING HTML REMAINS UNCHANGED -->
+  <div class="card">
+
+    <!-- Card 1: X96 Media Player -->
+    <div class="slide active" id="slide-0">
+      <p class="cat">Media Player</p>
+      <h2 class="heading">SignStix <span>X96</span></h2>
+      <div class="img-wrap">
+        <img src="https://signstix.com/wp-content/uploads/2024/05/X96-Device-No-background-2-768x768.png" alt="X96 Media Player" />
+      </div>
+      <p class="desc">Our X96 Android Device is a compact media player that can turn any screen into a digital signage device.</p>
+      <div class="tag-row">
+        <span class="tag">Android</span>
+        <span class="tag">Compact</span>
+        <span class="tag">Digital Signage</span>
+      </div>
+      <a href="https://signstix.com/digital-signage-solutions/signstix-android-media-device-x96/" target="_blank" class="btn">Learn More →</a>
+    </div>
+
+    <!-- Card 2: New APK Release -->
+    <div class="slide" id="slide-1">
+      <p class="cat">New APK Release</p>
+      <h2 class="heading">SignStix <span>3.3.xx</span></h2>
+      <div class="icon-wrap">
+        <div class="icon-circle">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="28" fill="#c34a36" opacity="0.12"/>
+            <path d="M32 14v22M32 36l-8-8M32 36l8-8" stroke="#c34a36" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18 46h28" stroke="#c34a36" stroke-width="3.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <p class="desc">Devices can be upgraded via the Devices page in Director. Stay up to date with the latest SignStix APK release.</p>
+      <div class="tag-row">
+        <span class="tag">Update</span>
+        <span class="tag">Android</span>
+        <span class="tag">Director</span>
+      </div>
+      <a href="https://signstix.com/new-releases/" target="_blank" class="btn">View Release →</a>
+    </div>
+
+    <!-- Card 3: SignStix Academy -->
+    <div class="slide" id="slide-2">
+      <p class="cat">Learn</p>
+      <h2 class="heading">SignStix <span>Academy</span></h2>
+      <div class="icon-wrap">
+        <div class="icon-circle">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="28" fill="#c34a36" opacity="0.12"/>
+            <polygon points="24,20 48,32 24,44" fill="#c34a36" opacity="0.85"/>
+          </svg>
+        </div>
+      </div>
+      <p class="desc">Watch helpful tutorials and learn how to easily create engaging digital content on SignStix's digital signage platform.</p>
+      <div class="tag-row">
+        <span class="tag">Tutorials</span>
+        <span class="tag">Videos</span>
+        <span class="tag">Getting Started</span>
+      </div>
+      <a href="https://signstix.com/support/videos/" target="_blank" class="btn">Watch Now →</a>
+    </div>
+
+    <!-- Radio dot navigation -->
+    <div class="radio-row" id="radios">
+      <button class="active" data-index="0" aria-label="Card 1"></button>
+      <button data-index="1" aria-label="Card 2"></button>
+      <button data-index="2" aria-label="Card 3"></button>
+    </div>
+
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const btns = document.querySelectorAll('#radios button');
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = parseInt(btn.dataset.index);
+        slides.forEach((s, j) => s.classList.toggle('active', j === i));
+        btns.forEach((b, j) => b.classList.toggle('active', j === i));
+      });
+    });
+  </script>
+
 </body>
 </html>
