@@ -40,7 +40,6 @@
       flex-direction: column;
     }
 
-    /* Sliding viewport */
     .viewport {
       width: 365px;
       flex: 1;
@@ -84,7 +83,6 @@
 
     .heading span { color: #f26724; }
 
-    /* Media area — reserves space before image loads */
     .media {
       flex: 1;
       min-height: 0;
@@ -95,7 +93,6 @@
       background: transparent;
     }
 
-    /* Image: fixed display size so layout never reflows on load */
     .media img {
       width: 175px;
       height: 175px;
@@ -131,22 +128,6 @@
       overflow: hidden;
     }
 
-    .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    .tag {
-      padding: 3px 11px;
-      border-radius: 999px;
-      background: #f2cfc9;
-      font-size: 11px;
-      font-weight: 500;
-      color: #7a2a1a;
-    }
-
     .btn {
       display: flex;
       align-items: center;
@@ -171,7 +152,6 @@
     .btn:hover { background: #a83929; }
     .btn:active { transform: scale(0.98); }
 
-    /* Radio dots — fixed strip outside the sliding area */
     .radio-row {
       height: 36px;
       flex-shrink: 0;
@@ -210,13 +190,6 @@
           <p class="cat">Media Player</p>
           <h2 class="heading">SignStix <span>X96</span></h2>
           <div class="media">
-            <!--
-              width/height set to 175px so the browser reserves
-              exactly this space before the image loads — no layout reflow.
-              object-fit: contain keeps the image proportional.
-              The source is 768x768 which is larger than needed but
-              ensures crisp display on high-DPI screens.
-            -->
             <img
               src="https://signstix.com/wp-content/uploads/2024/05/X96-Device-No-background-2-768x768.png"
               alt="SignStix X96 Android Media Player"
@@ -225,18 +198,13 @@
             />
           </div>
           <p class="desc">Our X96 Android Device is a compact media player that turns any screen into a digital signage device.</p>
-          <div class="tag-row">
-            <span class="tag">Android</span>
-            <span class="tag">Compact</span>
-            <span class="tag">Digital Signage</span>
-          </div>
           <a href="https://signstix.com/digital-signage-solutions/signstix-android-media-device-x96/" target="_blank" class="btn">Learn More →</a>
         </div>
 
         <!-- Slide 2: New APK Release -->
         <div class="slide">
           <p class="cat">New APK Release</p>
-          <h2 class="heading">SignStix <span>3.3.27</span></h2>
+          <h2 class="heading">SignStix <span>3.3.xx</span></h2>
           <div class="media">
             <div class="icon-circle">
               <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -247,11 +215,6 @@
             </div>
           </div>
           <p class="desc">Devices can be upgraded via the Devices page in Director. Stay up to date with the latest SignStix APK release.</p>
-          <div class="tag-row">
-            <span class="tag">Update</span>
-            <span class="tag">Android</span>
-            <span class="tag">Director</span>
-          </div>
           <a href="https://signstix.com/new-releases/" target="_blank" class="btn">View Release →</a>
         </div>
 
@@ -268,18 +231,12 @@
             </div>
           </div>
           <p class="desc">Watch helpful tutorials and learn how to easily create engaging digital content on SignStix's digital signage platform.</p>
-          <div class="tag-row">
-            <span class="tag">Tutorials</span>
-            <span class="tag">Videos</span>
-            <span class="tag">Getting Started</span>
-          </div>
           <a href="https://signstix.com/support/videos/" target="_blank" class="btn">Watch Now →</a>
         </div>
 
       </div>
     </div>
 
-    <!-- Radio dots — lives outside the track so it never slides -->
     <div class="radio-row" id="radios">
       <button class="active" data-index="0" aria-label="Slide 1"></button>
       <button data-index="1" aria-label="Slide 2"></button>
