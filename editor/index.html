@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>SignStix Carousel Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#2b2b2b;
+    --sub:#6f6f6f;
+    --line:#e3e0da;
+    --panel:#ffffff;
+    --bg:#f3f1ec;
+    --accent:#f26724;
+    --accent-dark:#a83929;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:Montserrat, sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    display:flex;
+    flex-direction:column;
+  }
+  header{
+    padding:20px 28px;
+    border-bottom:1px solid var(--line);
+    background:var(--panel);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  header h1{
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:0.02em;
+  }
+  header p{
+    font-size:12px;
+    color:var(--sub);
+    margin-top:2px;
+  }
+  .actions{ display:flex; gap:10px; }
+  .actions button{
+    font-family:Montserrat, sans-serif;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.03em;
+    border:none;
+    border-radius:999px;
+    padding:10px 18px;
+    cursor:pointer;
+    transition:background .15s, transform .1s;
+  }
+  #downloadBtn{ background:var(--accent); color:#fff; }
+  #downloadBtn:hover{ background:var(--accent-dark); }
+  #copyBtn{ background:transparent; color:var(--ink); border:1px solid var(--line) !important; }
+  #copyBtn:hover{ background:#eee; }
+  #publishBtn{ background:#24292f; color:#fff; }
+  #publishBtn:hover{ background:#1a1e23; }
+  #publishBtn:disabled{ opacity:0.5; cursor:not-allowed; }
+  button:active{ transform:scale(0.97); }
+
+  main{
+    flex:1;
+    display:grid;
+    grid-template-columns:minmax(320px, 460px) 1fr;
+    gap:0;
+    min-height:0;
+  }
+
+  .form-pane{
+    overflow-y:auto;
+    padding:24px 28px 60px;
+    border-right:1px solid var(--line);
+    background:var(--panel);
+  }
+
+  .tabs{
+    display:flex;
+    gap:4px;
+    margin-bottom:20px;
+    border-bottom:1px solid var(--line);
+    flex-wrap:wrap;
+  }
+  .tab-item{
+    display:flex;
+    align-items:center;
+    gap:2px;
+    padding-right:10px;
+  }
+  .tabs button.tab-btn{
+    font-family:Montserrat, sans-serif;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.02em;
+    color:var(--sub);
+    background:none;
+    border:none;
+    padding:10px 4px;
+    cursor:pointer;
+    border-bottom:2px solid transparent;
+  }
+  .tabs button.tab-btn.active{
+    color:var(--accent);
+    border-bottom:2px solid var(--accent);
+  }
+  .reorder-btns{
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+  }
+  .reorder-btn{
+    font-family:Montserrat, sans-serif;
+    font-size:8px;
+    line-height:1;
+    color:var(--sub);
+    background:#f3f1ec;
+    border:1px solid var(--line);
+    border-radius:3px;
+    width:16px;
+    height:13px;
+    padding:0;
+    cursor:pointer;
+  }
+  .reorder-btn:hover:not(:disabled){
+    background:#fdf1ec;
+    color:var(--accent);
+    border-color:var(--accent);
+  }
+  .reorder-btn:disabled{
+    opacity:0.3;
+    cursor:not-allowed;
+  }
+
+  .slide-form{ display:none; flex-direction:column; gap:16px; }
+  .slide-form.active{ display:flex; }
+
+  .field label{
+    display:block;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--sub);
+    margin-bottom:6px;
+  }
+  .field input[type="text"],
+  .field input[type="url"],
+  .field textarea{
+    width:100%;
+    font-family:Montserrat, sans-serif;
+    font-size:13px;
+    color:var(--ink);
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#fbfaf8;
+    outline:none;
+  }
+  .field input:focus,
+  .field textarea:focus{
+    border-color:var(--accent);
+    background:#fff;
+  }
+  .field textarea{ resize:vertical; min-height:64px; line-height:1.5; }
+  .hint{ font-size:11px; color:var(--sub); margin-top:5px; }
+
+  .row-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+
+  .image-row{ display:flex; gap:10px; align-items:flex-start; }
+  .image-row .field{ flex:1; }
+  .thumb{
+    width:52px; height:52px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:#fff repeating-conic-gradient(#f0f0f0 0% 25%, #fff 0% 50%) 50% / 10px 10px;
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+    flex-shrink:0;
+  }
+  .thumb img{ max-width:100%; max-height:100%; object-fit:contain; }
+  .thumb .empty{ font-size:9px; color:var(--sub); text-align:center; }
+
+  .upload-btn{
+    font-size:11px;
+    font-weight:700;
+    color:var(--accent);
+    background:none;
+    border:1px dashed var(--accent);
+    border-radius:8px;
+    padding:8px 10px;
+    cursor:pointer;
+    margin-top:8px;
+  }
+  .upload-btn:hover{ background:#fdf1ec; }
+
+  fieldset{ border:none; }
+  legend{
+    font-size:12px;
+    font-weight:700;
+    color:var(--ink);
+    margin-bottom:10px;
+  }
+  .divider{ height:1px; background:var(--line); margin:4px 0 6px; }
+
+  .preview-pane{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px;
+    background-image:
+      linear-gradient(#e9e6df 1px, transparent 1px),
+      linear-gradient(90deg, #e9e6df 1px, transparent 1px);
+    background-size:24px 24px;
+  }
+
+  .preview-controls{
+    margin-bottom:14px;
+  }
+  .pause-preview-btn{
+    font-family:Montserrat, sans-serif;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.02em;
+    color:var(--ink);
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:8px 16px;
+    cursor:pointer;
+    transition:background .15s;
+  }
+  .pause-preview-btn:hover{
+    background:#f3f1ec;
+  }
+
+  /* ---- Preview card (mirrors exported markup) ---- */
+  .card{
+    width:365px;
+    height:447px;
+    background:#f8f8f6;
+    border-radius:40px;
+    box-shadow:0 20px 40px -14px rgba(0,0,0,0.18);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  .viewport{ width:365px; flex:1; min-height:0; overflow:hidden; }
+  .track{ display:flex; width:calc(365px * 4); height:100%; transition:transform .45s cubic-bezier(.4,0,.2,1); }
+  .slide{ width:365px; height:100%; flex-shrink:0; padding:26px 26px 20px; display:flex; flex-direction:column; gap:10px; }
+  .cat{ font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); flex-shrink:0; }
+  .heading{ font-size:20px; font-weight:700; color:#444; line-height:1.2; flex-shrink:0; }
+  .heading .heading-plain{ color: var(--ink); }
+  .media{ flex:1; min-height:0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .media img{ width:175px; height:175px; object-fit:contain; display:block; flex-shrink:0; }
+  .icon-circle{ width:100px; height:100px; border-radius:50%; background:#f2cfc9; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .icon-circle svg{ width:48px; height:48px; }
+  .desc{ font-size:12px; color:#696969; line-height:1.6; flex-shrink:0; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  .btn{ display:flex; align-items:center; justify-content:center; gap:8px; width:100%; height:42px; border-radius:999px; background:var(--accent); color:#fff; font-family:Montserrat, sans-serif; font-size:13px; font-weight:700; letter-spacing:.05em; border:none; cursor:pointer; text-decoration:none; flex-shrink:0; }
+  .radio-row{ height:36px; flex-shrink:0; display:flex; align-items:center; justify-content:center; gap:10px; background:#f8f8f6; }
+  .radio-row button{ width:10px; height:10px; border-radius:50%; border:none; background:#d4c5c3; cursor:pointer; padding:0; transition:background .2s, transform .2s; }
+  .radio-row button.active{ background:var(--accent); transform:scale(1.3); }
+
+  @media (max-width:860px){
+    main{ grid-template-columns:1fr; }
+    .form-pane{ border-right:none; border-bottom:1px solid var(--line); max-height:60vh; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>SignStix Carousel Editor</h1>
+    <p>Edit the copy and images for each slide, then export the finished HTML.</p>
+  </div>
+  <div class="actions">
+    <button id="copyBtn">Copy HTML</button>
+    <button id="downloadBtn">Download HTML</button>
+    <button id="publishBtn">Publish to GitHub</button>
+  </div>
+</header>
+
+<div id="publishBar" style="display:none; padding:16px 28px; background:#fbfaf8; border-bottom:1px solid var(--line);">
+  <div id="publishTokenForm">
+    <p style="font-size:12px; font-weight:700; margin-bottom:6px;">GitHub personal access token required</p>
+    <p style="font-size:11px; color:var(--sub); line-height:1.6; margin-bottom:10px; max-width:560px;">
+      Create a <strong>fine-grained token</strong> at
+      <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" style="color:var(--accent);">github.com/settings/personal-access-tokens/new</a>,
+      scoped to only the <code>wc82/login-page-promo</code> repository, with <strong>Contents: Read and write</strong> permission.
+      You must also be added as a collaborator on the repo. Your token is kept only in this browser tab's session — never saved to the repo.
+    </p>
+    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+      <input type="password" id="tokenInput" placeholder="github_pat_…" style="font-family:Montserrat, sans-serif; font-size:12px; padding:9px 12px; border:1px solid var(--line); border-radius:8px; width:280px;" />
+      <button id="saveTokenBtn" style="font-family:Montserrat, sans-serif; font-size:12px; font-weight:700; border:none; border-radius:999px; padding:9px 16px; cursor:pointer; background:var(--accent); color:#fff;">Save & Publish</button>
+      <button id="cancelTokenBtn" style="font-family:Montserrat, sans-serif; font-size:12px; font-weight:700; border:1px solid var(--line); border-radius:999px; padding:9px 16px; cursor:pointer; background:none; color:var(--ink);">Cancel</button>
+    </div>
+  </div>
+  <div id="publishStatusForm" style="display:none;">
+    <span style="font-size:11px; color:var(--sub);">Publishing as authenticated user &middot;</span>
+    <button id="forgetTokenBtn" style="margin-left:4px; font-size:11px; background:none; border:none; color:var(--accent); font-weight:700; cursor:pointer; padding:0;">Forget token</button>
+  </div>
+</div>
+
+<main>
+  <div class="form-pane">
+    <div class="tabs" id="tabs">
+      <div class="tab-item" data-slide="0">
+        <button class="tab-btn active" data-slide="0" data-fallback="Slide 1">Slide 1</button>
+        <span class="reorder-btns">
+          <button class="reorder-btn" data-slide="0" data-dir="-1" title="Move slide up" disabled>▲</button>
+          <button class="reorder-btn" data-slide="0" data-dir="1" title="Move slide down">▼</button>
+        </span>
+      </div>
+      <div class="tab-item" data-slide="1">
+        <button class="tab-btn" data-slide="1" data-fallback="Slide 2">Slide 2</button>
+        <span class="reorder-btns">
+          <button class="reorder-btn" data-slide="1" data-dir="-1" title="Move slide up">▲</button>
+          <button class="reorder-btn" data-slide="1" data-dir="1" title="Move slide down">▼</button>
+        </span>
+      </div>
+      <div class="tab-item" data-slide="2">
+        <button class="tab-btn" data-slide="2" data-fallback="Slide 3">Slide 3</button>
+        <span class="reorder-btns">
+          <button class="reorder-btn" data-slide="2" data-dir="-1" title="Move slide up">▲</button>
+          <button class="reorder-btn" data-slide="2" data-dir="1" title="Move slide down">▼</button>
+        </span>
+      </div>
+      <div class="tab-item" data-slide="3">
+        <button class="tab-btn" data-slide="3" data-fallback="Slide 4">Slide 4</button>
+        <span class="reorder-btns">
+          <button class="reorder-btn" data-slide="3" data-dir="-1" title="Move slide up">▲</button>
+          <button class="reorder-btn" data-slide="3" data-dir="1" title="Move slide down" disabled>▼</button>
+        </span>
+      </div>
+    </div>
+
+    <!-- Slide 1: New Website announcement -->
+    <div class="slide-form active" data-slide="0">
+      <fieldset>
+        <legend>Content</legend>
+        <div class="field" style="margin-bottom:12px;">
+          <label for="cat-0">Eyebrow category</label>
+          <input type="text" id="cat-0" value="Announcement" />
+        </div>
+        <div class="row-2" style="margin-bottom:12px;">
+          <div class="field">
+            <label for="head-0">Heading (plain)</label>
+            <input type="text" id="head-0" value="New" />
+          </div>
+          <div class="field">
+            <label for="headAccent-0">Heading (orange)</label>
+            <input type="text" id="headAccent-0" value="Website" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="desc-0">Description</label>
+          <textarea id="desc-0">We've launched a brand new website with a fresh look, easier navigation and updated resources. Take a look and let us know what you think.</textarea>
+        </div>
+      </fieldset>
+      <div class="divider"></div>
+      <fieldset>
+        <legend>Image</legend>
+        <div class="image-row">
+          <div class="thumb" id="thumb-0"><span class="empty">Using icon</span></div>
+          <div class="field">
+            <label for="img-0">Image URL</label>
+            <input type="url" id="img-0" value="" placeholder="https://…" />
+            <div class="hint">Leave blank to fall back to the icon circle.</div>
+            <input type="file" id="upload-0" accept="image/*" style="display:none" />
+            <button type="button" class="upload-btn" data-upload="0">Upload image file instead</button>
+          </div>
+        </div>
+      </fieldset>
+      <div class="divider"></div>
+      <fieldset>
+        <legend>Button</legend>
+        <div class="row-2">
+          <div class="field">
+            <label for="btnText-0">Button text</label>
+            <input type="text" id="btnText-0" value="Visit Website" />
+          </div>
+          <div class="field">
+            <label for="btnLink-0">Button link</label>
+            <input type="url" id="btnLink-0" value="https://signstix.com/" />
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <!-- Slide 2: X96 Media Player -->
+    <div class="slide-form" data-slide="1">
+      <fieldset>
+        <legend>Content</legend>
+        <div class="field" style="margin-bottom:12px;">
+          <label for="cat-1">Eyebrow category</label>
+          <input type="text" id="cat-1" value="Media Player" />
+        </div>
+        <div class="row-2" style="margin-bottom:12px;">
+          <div class="field">
+            <label for="head-1">Heading (plain)</label>
+            <input type="text" id="head-1" value="SignStix" />
+          </div>
+          <div class="field">
+            <label for="headAccent-1">Heading (orange)</label>
+            <input type="text" id="headAccent-1" value="X96" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="desc-1">Description</label>
+          <textarea id="desc-1">Our X96 Android Device is a compact media player that turns any screen into a digital signage device.</textarea>
+        </div>
+      </fieldset>
+      <div class="divider"></div>
+      <fieldset>
+        <legend>Image</legend>
+        <div class="image-row">
+          <div class="thumb" id="thumb-1"><span class="empty">No image</span></div>
+          <div class="field">
+            <label for="img-1">Image URL</label>
+            <input type="url" id="img-1" value="https://i.postimg.cc/y8TRZ2hH/X96-Device-No-background-2-768x768.png" placeholder="https://…" />
+            <div class="hint">Leave blank to fall back to the icon circle.</div>
+            <input type="file" id="upload-1" accept="image/*" style="display:none" />
+            <button type="button" class="upload-btn" data-upload="1">Upload image file instead</button>
+          </div>
+        </div>
+      </fieldset>
+      <div class="divider"></div>
+      <fieldset>
+        <legend>Button</legend>
+        <div class="row-2">
+          <div class="field">
+            <label for="btnText-1">Button text</label>
+            <input type="text" id="btnText-1" value="Learn More" />
+          </div>
+          <div class="field">
+            <label for="btnLink-1">Button link</label>
+            <input type="url" id="btnLink-1" value="https://signstix.com/digital-signage-solutions/signstix-android-media-device-x96/" />
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <!-- Slide 3: New APK Release -->
+    <div class="slide-form" data-slide="2">
+      <fieldset>
+        <legend>Content</legend>
+        <div class="field" style="margin-bottom:12px;">
+          <label for="cat-2">Eyebrow category</label>
+          <input type="text" id="cat-2" value="New APK Release" />
+        </div>
+        <div class="row-2" style="margin-bottom:12px;">
+          <div class="field">
+            <label for="head-2">Heading (plain)</label>
+            <input type="text" id="head-2" value="SignStix" />
+          </div>
+          <div class="field">
+            <label for="headAccent-2">Heading (orange)</label>
+            <input type="text" id="headAccent-2" value="3.4.0" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="desc-2">Description</label>
+          <textarea id="desc-2">Devices can be upgraded via the Devices page in Director. Stay up to date with the latest SignStix APK release.</textarea>
+        </div>
+      </fieldset>
+      <div class="divider"></div>
+      <fieldset>
+        <legend>Image</legend>
+        <div class="image-row">
+          <div class="thumb" id="thumb-2"><span class="empty">Using icon</span></div>
+          <div class="field">
+            <label for="img-2">Image URL</label>
+            <input type="url" id="img-2" value="" placeholder="https://…" />
+            <div class="hint">Leave blank to fall back to the icon circle.</div>
+            <input type="file" id="upload-2" accept="image/*" style="display:none" />
+            <button type="button" class="upload-btn" data-upload="2">Upload image file instead</button>
+          </div>
+        </div>
+      </fieldset>
+      <div class="divider"></div>
+      <fieldset>
+        <legend>Button</legend>
+        <div class="row-2">
+          <div class="field">
+            <label for="btnText-2">Button text</label>
+            <input type="text" id="btnText-2" value="View Release" />
+          </div>
+          <div class="field">
+            <label for="btnLink-2">Button link</label>
+            <input type="url" id="btnLink-2" value="https://signstix.com/new-releases/" />
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <!-- Slide 4: SignStix Academy -->
+    <div class="slide-form" data-slide="3">
+      <fieldset>
+        <legend>Content</legend>
+        <div class="field" style="margin-bottom:12px;">
+          <label for="cat-3">Eyebrow category</label>
+          <input type="text" id="cat-3" value="Learn" />
+        </div>
+        <div class="row-2" style="margin-bottom:12px;">
+          <div class="field">
+            <label for="head-3">Heading (plain)</label>
+            <input type="text" id="head-3" value="SignStix" />
+          </div>
+          <div class="field">
+            <label for="headAccent-3">Heading (orange)</label>
+            <input type="text" id="headAccent-3" value="Academy" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="desc-3">Description</label>
+          <textarea id="desc-3">Watch helpful tutorials and learn how to easily create engaging digital content on SignStix's digital signage platform.</textarea>
+        </div>
+      </fieldset>
+      <div class="divider"></div>
+      <fieldset>
+        <legend>Image</legend>
+        <div class="image-row">
+          <div class="thumb" id="thumb-3"><span class="empty">Using icon</span></div>
+          <div class="field">
+            <label for="img-3">Image URL</label>
+            <input type="url" id="img-3" value="" placeholder="https://…" />
+            <div class="hint">Leave blank to fall back to the icon circle.</div>
+            <input type="file" id="upload-3" accept="image/*" style="display:none" />
+            <button type="button" class="upload-btn" data-upload="3">Upload image file instead</button>
+          </div>
+        </div>
+      </fieldset>
+      <div class="divider"></div>
+      <fieldset>
+        <legend>Button</legend>
+        <div class="row-2">
+          <div class="field">
+            <label for="btnText-3">Button text</label>
+            <input type="text" id="btnText-3" value="Watch Now" />
+          </div>
+          <div class="field">
+            <label for="btnLink-3">Button link</label>
+            <input type="url" id="btnLink-3" value="https://signstix.com/support/videos/" />
+          </div>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+
+  <div class="preview-pane">
+    <div class="preview-controls">
+      <button id="pausePreviewBtn" class="pause-preview-btn">⏸ Pause preview</button>
+    </div>
+    <div class="card">
+      <div class="viewport">
+        <div class="track" id="track">
+          <div class="slide">
+            <p class="cat" id="p-cat-0"></p>
+            <h2 class="heading"><span id="p-head-0" class="heading-plain"></span> <span id="p-headAccent-0" style="color:var(--accent)"></span></h2>
+            <div class="media" id="p-media-0"></div>
+            <p class="desc" id="p-desc-0"></p>
+            <a href="#" target="_blank" class="btn" id="p-btn-0"></a>
+          </div>
+          <div class="slide">
+            <p class="cat" id="p-cat-1"></p>
+            <h2 class="heading"><span id="p-head-1" class="heading-plain"></span> <span id="p-headAccent-1" style="color:var(--accent)"></span></h2>
+            <div class="media" id="p-media-1"></div>
+            <p class="desc" id="p-desc-1"></p>
+            <a href="#" target="_blank" class="btn" id="p-btn-1"></a>
+          </div>
+          <div class="slide">
+            <p class="cat" id="p-cat-2"></p>
+            <h2 class="heading"><span id="p-head-2" class="heading-plain"></span> <span id="p-headAccent-2" style="color:var(--accent)"></span></h2>
+            <div class="media" id="p-media-2"></div>
+            <p class="desc" id="p-desc-2"></p>
+            <a href="#" target="_blank" class="btn" id="p-btn-2"></a>
+          </div>
+          <div class="slide">
+            <p class="cat" id="p-cat-3"></p>
+            <h2 class="heading"><span id="p-head-3" class="heading-plain"></span> <span id="p-headAccent-3" style="color:var(--accent)"></span></h2>
+            <div class="media" id="p-media-3"></div>
+            <p class="desc" id="p-desc-3"></p>
+            <a href="#" target="_blank" class="btn" id="p-btn-3"></a>
+          </div>
+        </div>
+      </div>
+      <div class="radio-row" id="radios">
+        <button class="active" data-index="0" aria-label="Slide 1"></button>
+        <button data-index="1" aria-label="Slide 2"></button>
+        <button data-index="2" aria-label="Slide 3"></button>
+        <button data-index="3" aria-label="Slide 4"></button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const SLIDE_COUNT = 4;
+
+  const ICON_SVGS = [
+    // Globe icon
+    `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="28" fill="#f26724" opacity="0.12"/><circle cx="32" cy="32" r="16" stroke="#f26724" stroke-width="3.5"/><ellipse cx="32" cy="32" rx="7" ry="16" stroke="#f26724" stroke-width="3.5"/><path d="M16 32h32" stroke="#f26724" stroke-width="3.5" stroke-linecap="round"/></svg>`,
+    // Download/update icon
+    `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="28" fill="#f26724" opacity="0.12"/><path d="M32 14v22M32 36l-8-8M32 36l8-8" stroke="#f26724" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 46h28" stroke="#f26724" stroke-width="3.5" stroke-linecap="round"/></svg>`,
+    // Play icon
+    `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="28" fill="#f26724" opacity="0.12"/><polygon points="24,20 48,32 24,44" fill="#f26724" opacity="0.85"/></svg>`
+  ];
+
+  // Icon shown for each slide SLOT when no image URL is set.
+  // This array is what gets reordered when slides move — so a slide's
+  // fallback icon travels along with its content, not with its position.
+  let slideIcons = [ICON_SVGS[0], ICON_SVGS[1], ICON_SVGS[1], ICON_SVGS[2]];
+
+  // Fields swapped when reordering slides (everything except the icon,
+  // which is tracked separately in slideIcons above).
+  const fieldIds = ['cat','head','headAccent','desc','img','btnText','btnLink'];
+
+  function getSlideData(i){
+    return {
+      cat: document.getElementById(`cat-${i}`).value,
+      head: document.getElementById(`head-${i}`).value,
+      headAccent: document.getElementById(`headAccent-${i}`).value,
+      desc: document.getElementById(`desc-${i}`).value,
+      img: document.getElementById(`img-${i}`).value.trim(),
+      btnText: document.getElementById(`btnText-${i}`).value,
+      btnLink: document.getElementById(`btnLink-${i}`).value
+    };
+  }
+
+  function renderPreview(){
+    for(let i=0;i<SLIDE_COUNT;i++){
+      const d = getSlideData(i);
+      document.getElementById(`p-cat-${i}`).textContent = d.cat;
+      document.getElementById(`p-head-${i}`).textContent = d.head;
+      document.getElementById(`p-headAccent-${i}`).textContent = d.headAccent;
+      document.getElementById(`p-desc-${i}`).textContent = d.desc;
+
+      const media = document.getElementById(`p-media-${i}`);
+      const thumb = document.getElementById(`thumb-${i}`);
+      if(d.img){
+        media.innerHTML = `<img src="${escapeAttr(d.img)}" alt="${escapeAttr(d.head + ' ' + d.headAccent)}" width="175" height="175" />`;
+        thumb.innerHTML = `<img src="${escapeAttr(d.img)}" alt="" />`;
+      } else {
+        media.innerHTML = `<div class="icon-circle">${slideIcons[i]}</div>`;
+        thumb.innerHTML = `<span class="empty">Using icon</span>`;
+      }
+
+      const btn = document.getElementById(`p-btn-${i}`);
+      btn.textContent = d.btnText + ' →';
+      btn.href = d.btnLink || '#';
+    }
+    updateTabLabels();
+  }
+
+  function updateTabLabels(){
+    for(let i=0;i<SLIDE_COUNT;i++){
+      const d = getSlideData(i);
+      const tab = document.querySelector(`#tabs .tab-btn[data-slide="${i}"]`);
+      const combined = `${d.head} ${d.headAccent}`.trim();
+      tab.textContent = combined || tab.dataset.fallback;
+    }
+  }
+
+  function escapeAttr(str){
+    return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function escapeHtml(str){
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // live update
+  document.querySelectorAll('.form-pane input, .form-pane textarea').forEach(el=>{
+    el.addEventListener('input', renderPreview);
+  });
+
+  function setActiveSlide(idx){
+    document.querySelectorAll('#tabs .tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelector(`#tabs .tab-btn[data-slide="${idx}"]`).classList.add('active');
+    document.querySelectorAll('.slide-form').forEach(f=>f.classList.remove('active'));
+    document.querySelector(`.slide-form[data-slide="${idx}"]`).classList.add('active');
+    goTo(idx);
+    resetPreviewAutoScroll();
+  }
+
+  // tabs
+  document.querySelectorAll('#tabs .tab-btn').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      setActiveSlide(parseInt(tab.dataset.slide));
+    });
+  });
+
+  // reorder (swap slide content with the neighboring slot)
+  document.querySelectorAll('.reorder-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const i = parseInt(btn.dataset.slide);
+      const dir = parseInt(btn.dataset.dir);
+      const j = i + dir;
+      if(j < 0 || j >= SLIDE_COUNT) return;
+
+      fieldIds.forEach(f=>{
+        const a = document.getElementById(`${f}-${i}`);
+        const b = document.getElementById(`${f}-${j}`);
+        const tmp = a.value;
+        a.value = b.value;
+        b.value = tmp;
+      });
+      [slideIcons[i], slideIcons[j]] = [slideIcons[j], slideIcons[i]];
+
+      renderPreview();
+      setActiveSlide(j);
+    });
+  });
+
+  // preview radio dots + carousel
+  const track = document.getElementById('track');
+  const dots = document.querySelectorAll('#radios button');
+  function goTo(i){
+    track.style.transform = `translateX(${-365 * i}px)`;
+    dots.forEach((b,j)=>b.classList.toggle('active', j===i));
+  }
+  dots.forEach(btn=>btn.addEventListener('click', ()=>{
+    setActiveSlide(parseInt(btn.dataset.index));
+  }));
+
+  let previewCurrent = 0;
+  let previewAutoScroll;
+  let previewPaused = false;
+  function startPreviewAutoScroll(){
+    if(previewPaused) return;
+    previewAutoScroll = setInterval(()=>{
+      previewCurrent = (previewCurrent + 1) % dots.length;
+      goTo(previewCurrent);
+    }, 3000);
+  }
+  function resetPreviewAutoScroll(){
+    clearInterval(previewAutoScroll);
+    previewCurrent = [...dots].findIndex(b=>b.classList.contains('active'));
+    startPreviewAutoScroll();
+  }
+  startPreviewAutoScroll();
+
+  const pausePreviewBtn = document.getElementById('pausePreviewBtn');
+  pausePreviewBtn.addEventListener('click', ()=>{
+    previewPaused = !previewPaused;
+    if(previewPaused){
+      clearInterval(previewAutoScroll);
+      pausePreviewBtn.textContent = '▶ Play preview';
+    } else {
+      pausePreviewBtn.textContent = '⏸ Pause preview';
+      startPreviewAutoScroll();
+    }
+  });
+
+  // image upload -> base64 into URL field
+  document.querySelectorAll('.upload-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.getElementById(`upload-${btn.dataset.upload}`).click();
+    });
+  });
+  document.querySelectorAll('input[type="file"]').forEach(input=>{
+    input.addEventListener('change', (e)=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      const idx = input.id.split('-')[1];
+      const reader = new FileReader();
+      reader.onload = () => {
+        document.getElementById(`img-${idx}`).value = reader.result;
+        renderPreview();
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  function buildSlideMarkup(d, i){
+    const mediaHtml = d.img
+      ? `          <div class="media">
+            <img
+              src="${escapeAttr(d.img)}"
+              alt="${escapeAttr(d.head + ' ' + d.headAccent)}"
+              width="175"
+              height="175"
+            />
+          </div>`
+      : `          <div class="media">
+            <div class="icon-circle">
+              ${slideIcons[i]}
+            </div>
+          </div>`;
+
+    return `        <div class="slide">
+          <p class="cat">${escapeHtml(d.cat)}</p>
+          <h2 class="heading">${escapeHtml(d.head)} <span>${escapeHtml(d.headAccent)}</span></h2>
+${mediaHtml}
+          <p class="desc">${escapeHtml(d.desc)}</p>
+          <a href="${escapeAttr(d.btnLink)}" target="_blank" class="btn">${escapeHtml(d.btnText)} →</a>
+        </div>`;
+  }
+
+  function buildFullHtml(){
+    const slides = [];
+    for(let i=0;i<SLIDE_COUNT;i++){
+      slides.push(buildSlideMarkup(getSlideData(i), i));
+    }
+    const slideMarkup = slides.join('\n\n');
+    const dots = [];
+    for(let i=0;i<SLIDE_COUNT;i++){
+      dots.push(`      <button${i===0 ? ' class="active"' : ''} data-index="${i}" aria-label="Slide ${i+1}"></button>`);
+    }
+    const dotsMarkup = dots.join('\n');
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignStix Embed</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 365px;
+      height: 427px;
+      overflow: hidden;
+      background: transparent;
+      font-family: Montserrat, sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image:
+        linear-gradient(#efefef 2px, transparent 2px),
+        linear-gradient(90deg, #efefef 2px, transparent 2px),
+        linear-gradient(#efefef 1px, transparent 1px),
+        linear-gradient(90deg, #efefef 1px, #fcfcfc 1px);
+      background-size: 50px 50px, 50px 50px, 10px 10px, 10px 10px;
+      background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+    }
+
+    .card {
+      width: 365px;
+      height: 447px;
+      background: #f8f8f6;
+      border-radius: 40px;
+      box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.18);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .viewport {
+      width: 365px;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .track {
+      display: flex;
+      width: calc(365px * ${SLIDE_COUNT});
+      height: 100%;
+      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .slide {
+      width: 365px;
+      height: 100%;
+      flex-shrink: 0;
+      padding: 26px 26px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .cat {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #f26724;
+      flex-shrink: 0;
+    }
+
+    .heading {
+      font-size: 20px;
+      font-weight: 700;
+      color: #444;
+      line-height: 1.2;
+      flex-shrink: 0;
+    }
+
+    .heading span { color: #f26724; }
+
+    .media {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    .media img {
+      width: 175px;
+      height: 175px;
+      object-fit: contain;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    .icon-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: #f2cfc9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .icon-circle svg {
+      width: 48px;
+      height: 48px;
+    }
+
+    .desc {
+      font-size: 12px;
+      color: #696969;
+      line-height: 1.6;
+      flex-shrink: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      height: 42px;
+      border-radius: 999px;
+      background: #f26724;
+      color: #fff;
+      font-family: Montserrat, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.1s;
+      flex-shrink: 0;
+    }
+
+    .btn:hover { background: #a83929; }
+    .btn:active { transform: scale(0.98); }
+
+    .radio-row {
+      height: 36px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #f8f8f6;
+    }
+
+    .radio-row button {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: none;
+      background: #d4c5c3;
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .radio-row button.active {
+      background: #f26724;
+      transform: scale(1.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+
+    <div class="viewport">
+      <div class="track" id="track">
+
+${slideMarkup}
+
+      </div>
+    </div>
+
+    <div class="radio-row" id="radios">
+${dotsMarkup}
+    </div>
+
+  </div>
+
+  <script>
+    const track = document.getElementById('track');
+    const btns = document.querySelectorAll('#radios button');
+
+    function goTo(i) {
+      track.style.transform = \`translateX(\${-365 * i}px)\`;
+      btns.forEach((b, j) => b.classList.toggle('active', j === i));
+    }
+
+    btns.forEach(btn => btn.addEventListener('click', () => {
+      goTo(parseInt(btn.dataset.index));
+      resetAutoScroll();
+    }));
+
+    let current = 0;
+    let autoScroll;
+    function startAutoScroll() {
+      autoScroll = setInterval(() => {
+        current = (current + 1) % btns.length;
+        goTo(current);
+      }, 3000);
+    }
+    function resetAutoScroll() {
+      clearInterval(autoScroll);
+      current = parseInt([...btns].find(b => b.classList.contains('active')).dataset.index);
+      startAutoScroll();
+    }
+    startAutoScroll();
+  <\/script>
+
+</body>
+</html>
+`;
+  }
+
+  document.getElementById('downloadBtn').addEventListener('click', ()=>{
+    const html = buildFullHtml();
+    const blob = new Blob([html], {type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'signstix-embed.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('copyBtn').addEventListener('click', async ()=>{
+    const html = buildFullHtml();
+    try{
+      await navigator.clipboard.writeText(html);
+      const btn = document.getElementById('copyBtn');
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(()=>{ btn.textContent = original; }, 1400);
+    }catch(err){
+      alert('Could not copy automatically — please select and copy manually.');
+    }
+  });
+
+  // ---- Publish directly to GitHub (Contents API) ----
+  const GITHUB_OWNER = 'wc82';
+  const GITHUB_REPO = 'login-page-promo';
+  const GITHUB_BRANCH = 'main';
+  const GITHUB_FILE_PATH = 'index.html';
+  const TOKEN_SESSION_KEY = 'signstix_gh_token';
+
+  const publishBtn = document.getElementById('publishBtn');
+  const publishBar = document.getElementById('publishBar');
+  const publishTokenForm = document.getElementById('publishTokenForm');
+  const publishStatusForm = document.getElementById('publishStatusForm');
+  const tokenInput = document.getElementById('tokenInput');
+  const saveTokenBtn = document.getElementById('saveTokenBtn');
+  const cancelTokenBtn = document.getElementById('cancelTokenBtn');
+  const forgetTokenBtn = document.getElementById('forgetTokenBtn');
+
+  function getToken(){
+    return sessionStorage.getItem(TOKEN_SESSION_KEY) || '';
+  }
+  function setToken(token){
+    sessionStorage.setItem(TOKEN_SESSION_KEY, token);
+  }
+  function clearToken(){
+    sessionStorage.removeItem(TOKEN_SESSION_KEY);
+  }
+
+  function toBase64Utf8(str){
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+
+  async function publishToGitHub(token){
+    const apiBase = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`;
+    const headers = {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/vnd.github+json'
+    };
+
+    // 1. Get current file SHA (needed to update an existing file).
+    let sha = undefined;
+    const getRes = await fetch(`${apiBase}?ref=${GITHUB_BRANCH}`, { headers });
+    if(getRes.status === 200){
+      const data = await getRes.json();
+      sha = data.sha;
+    } else if(getRes.status !== 404){
+      const errBody = await getRes.json().catch(()=>({}));
+      throw new Error(`Could not read current file (${getRes.status}): ${errBody.message || getRes.statusText}`);
+    }
+
+    // 2. Commit the new content.
+    const putRes = await fetch(apiBase, {
+      method: 'PUT',
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: 'Update carousel content via editor',
+        content: toBase64Utf8(buildFullHtml()),
+        branch: GITHUB_BRANCH,
+        ...(sha ? { sha } : {})
+      })
+    });
+
+    if(!putRes.ok){
+      const errBody = await putRes.json().catch(()=>({}));
+      if(putRes.status === 401) throw new Error('Token was rejected — it may be invalid or expired.');
+      if(putRes.status === 403) throw new Error('Access denied — check the token has write access and you are a collaborator on the repo.');
+      if(putRes.status === 409) throw new Error('The file changed on GitHub since this page loaded. Reload and try again.');
+      throw new Error(`GitHub rejected the commit (${putRes.status}): ${errBody.message || putRes.statusText}`);
+    }
+
+    return putRes.json();
+  }
+
+  function showTokenForm(){
+    publishBar.style.display = 'block';
+    publishTokenForm.style.display = 'block';
+    publishStatusForm.style.display = 'none';
+    tokenInput.focus();
+  }
+  function showStatusForm(){
+    publishBar.style.display = 'block';
+    publishTokenForm.style.display = 'none';
+    publishStatusForm.style.display = 'block';
+  }
+  function hidePublishBar(){
+    publishBar.style.display = 'none';
+  }
+
+  async function doPublish(token){
+    publishBtn.disabled = true;
+    const original = publishBtn.textContent;
+    publishBtn.textContent = 'Publishing…';
+    try{
+      await publishToGitHub(token);
+      publishBtn.textContent = 'Published ✓';
+      showStatusForm();
+      setTimeout(()=>{ publishBtn.textContent = original; }, 2000);
+    }catch(err){
+      console.error(err);
+      alert('Publish failed: ' + err.message);
+      publishBtn.textContent = original;
+      showTokenForm();
+    }finally{
+      publishBtn.disabled = false;
+    }
+  }
+
+  publishBtn.addEventListener('click', ()=>{
+    const existing = getToken();
+    if(existing){
+      doPublish(existing);
+    } else {
+      showTokenForm();
+    }
+  });
+
+  saveTokenBtn.addEventListener('click', ()=>{
+    const token = tokenInput.value.trim();
+    if(!token){ tokenInput.focus(); return; }
+    setToken(token);
+    tokenInput.value = '';
+    doPublish(token);
+  });
+
+  cancelTokenBtn.addEventListener('click', ()=>{
+    hidePublishBar();
+  });
+
+  forgetTokenBtn.addEventListener('click', ()=>{
+    clearToken();
+    hidePublishBar();
+  });
+
+  renderPreview();
+</script>
+
+</body>
+</html>
